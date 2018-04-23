@@ -1,0 +1,77 @@
+//para usar o mongodb
+mongo
+
+//Para ver os bancos
+show dbs
+
+//para usar o banco de dados
+use quero-aulas
+
+//visualizar as collections
+show collections
+
+//01-Mostrar todos os documentos da coleção, de forma organizada
+db.usuarios.find().pretty()
+
+//02-Mostrar a quantidade de documentos em uma coleção
+db.usuarios.count()
+
+//03-mostra os documentos ocultando o id
+db.login.find({},{_id:0})
+
+//04-mostra todos os documentos da collection em ordem decrescente
+db.usuarios.find().sort({nome:-1})
+
+//05-mostra todos os documentos da collection em ordem crescente e não exibe o id
+db.usuarios.find({},{_id:0}).sort({nome:1})
+
+//06-limita a quantidade de documentos de uma collection
+db.disciplinas.find({},{_id:0}).limit(3).pretty()
+
+//07-retorna os valores unicos do atributo nome
+db.usuarios.distinct("nome")
+
+//08-retorna o nome da disciplina pesquisada
+db.disciplinas.find({nome:"Português"})
+
+//09-listar documentos dentro de documentos
+db.pedidos.find({"compra.produtos.preco":"60"}).pretty()
+
+//10-inserindo um documento na collection anuncions
+db.anuncios.insert({idAluno: 5, disciplina: "Programação", assunto: "PHP", preco: 50, horario:"Tarde", observacao: "Melhor horaŕio de manhã" })
+
+//11-atualizar um documento
+db.anuncios.update({"_id" : ObjectId("5ad7fb7e8d8e5d7c82073bf0")},{idAluno: 3, disciplina: "Matemática", assunto: "Probabilidade", preco: 50, horario:"Tarde", observacao: "Melhor horaŕio às 15 horas"})
+
+//12-mostrar todos os documentos que contenham o assunto Redação ou Probabilidade
+db.disciplinas.find({$or:[{assunto:"Redação"}, {assunto:"Probabilidade"}]})
+
+//13-retorna os documentos com o preço acima de 60
+db.anuncios.find({preco:{$gt:60}})
+
+//14-Essa operação de atualização definirá o valor do campo de preço nos documentos que contêm valor do campo preco menor que 50 para 62.
+db.anuncios.update({preco:{$lt:50}}, {$set:{preco: 62}})
+
+//15-Restringe oe campos retornados usando um segundo argumento
+db.disciplinas.find({assunto:{$in:["mongodb","PHP"]}},{ idProfessor:"1"})
+
+
+//16-a parit do método aggregate() é retornado os assuntos de cada disciplina e $max o máximo dos valores correspondentes de todos os documentos da coleção
+db.disciplinas.aggregate([{$group:{_id:"$nome", assunto:{$max:"$assunto"}}}])
+
+//17- =============================================================
+db.usuarios.find({"nome": "Pedro"})
+//essa consulta acima demora mais que o normal par isso é bom criar index, o 1 é a prioridade, assim a consulta fica muito mais rapida depois que criar o index vc faz a consulta acima novamente.
+db.usuarios.createIndex({"nome": 1})
+db.usuarios.find({"nome": "Pedro"})
+
+//para ver os index criados
+db.usuarios.getIndexes()
+
+//Para dropar apagar a index, ex: apagar a que criamos
+db.usuarios.dropIndex({"nome": 1})
+//=============================================================
+
+//18-retorna o documento que contenhao que está detro d / /
+db.disciplinas.find({assunto:/ção/}).pretty()
+
