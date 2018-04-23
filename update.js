@@ -9,13 +9,13 @@ MongoClient.connect(servidor, function(erro, db) {
    console.log("Conexão estabelecida com sucesso.");
 
 
-var newDados = {nome: "Jose", sobrenome: "Silva", idade: 23};
+var newDados = {_id: 4, nome: "José", sobrenome:"Fernando", cpf:09465750465, tipo: "Professor"};
 
 var dados = db.collection("usuarios");
 
-var filtro = {nome: "Jose"}
+var filtro = {_id: 4}
 
-var alteracao = {$set: { ativo: true}}
+var alteracao = {$set: { sobrenome: "Fernando da Silva Costa"}}//Mudar o sobre nome
 
 dados.updateMany(filtro, alteracao, newDados, function(erro, sucesso){
     if (erro)
