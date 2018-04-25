@@ -118,7 +118,7 @@ db.usuarios.replaceOne({"_id" :9,"sobrenome":"Silva"},{"sobrenome":"da Silva San
 db.disciplinas.update({ "_id" : ObjectId("5ad7f5ecb322677a0056662c")}, {$addToSet:{assunto:{$each:["Redação", "interpretação de texto", "Regência"]}}})
 
 //30--usa o $position para informar em qual posição será inserindo o novo elemento
-db.disciplinas.update({idProfessor:3,nome:"Programação"},{$push:{assunto:{$each:["MySql"], $position:0}}})
+db.disciplinas.update({idProfessor:3,nome:"Programação"},{$push:{assunto:{$each:["MySql"], $position:0}}}) 
 
 
 
