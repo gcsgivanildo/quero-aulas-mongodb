@@ -1,0 +1,99 @@
+//01 retorna os todos os documntos da collection
+db.pedidos.find()
+
+//02 retorna o primeiro docuemnto
+db.pedidos.findOne()
+
+//03 retorna o docuemnto de forma organizada
+db.pedidos.findOne().pretty()
+
+//04 busca em subconjunto
+db.mensagens.find({"conversa.data":"22/12/2017"})
+
+//05 retorna os documentos em ordem 
+db.pedidos.find().sort({"compra.produtos.preco":1})
+
+//06 retorna a quantidade de documentos
+db.disciplinas.find().count()
+
+//07 retorna uma quantidade informada
+db.usuarios.find().limit(2)
+
+//08 insertMany()
+db.usuarios.insertMany([{_id: 11, nome: "Betania", sobrenome:"Almeida", cpf:03456764865, tipo: "Aluno"}, {_id: 12, nome: "Katia", sobrenome:"Cilene", cpf:03444456765, tipo: "Professor"}]
+
+//09 insertOne()
+db.usuarios.insertOne({_id: 10, nome: "Moises", sobrenome:"Cordeiro", cpf:03456723565, tipo: "Aluno"})
+
+//10 set()
+db.anuncios.update({disciplina:"Português", assunto:"Redação"}, {$set:{preco: 62}})
+
+//11 unset()
+ db.anuncios.update({"disciplina":"Matemática"}, {$unset:{horario:" "}})
+
+//12 delete
+db.usuarios.remove( {_id:10})
+
+//13 push()
+db.anuncios.update({"disciplina":"Matemática"}, {$push:{horario:"Tarde"}})
+
+//14 pushAll()
+db.disciplinas.update({"idProfessor": 3, nome:"Programação"}, {$pushAll:{"assunto":["PHP","MySql","Laravel"]}})
+
+//15 pull()
+db.disciplinas.update({"_id" : ObjectId("5ad7f5ecb322677a0056662e")}, {$pull:{assunto:{$in:["PHP", "MySql"]}}})
+
+//16 pullAll()
+db.disciplinas.update({"_id" : ObjectId("5ad7f5ecb322677a0056662e")}, {$pullAll:{assunto:["Laravel"]}})
+
+//17 condicional $gt()
+db.anuncios.find({preco:{$gt:70}})
+
+//18 condicional $lt()
+db.anuncios.find({preco:{$lt:80}})
+
+//19 condicional $lte
+db.anuncios.find({preco:{$lte:70}})
+
+//20 condicional $all 
+db.disciplinas.find({assunto:{$all:["Probabilidade"]}})
+
+//21 condicional $in
+db.disciplinas.find({assunto:{$in:["Redação"]}})
+
+//22 condicional $nin
+db.disciplinas.find({assunto:{$nin:["Redação"]}})
+
+//23 logico $and
+db.disciplinas.find({$and:[{assunto:"Probabilidade"}, {assunto:"Conjuntos"}]})
+
+//24 lógico $or
+db.disciplinas.find({$or:[{assunto:"Probabilidade"}, {assunto:"Redação"}]})
+
+//25 update $addToSet
+db.disciplinas.update({nome:"Matemática"}, {$addToSet:{assunto:{$each:["Lógica", "Probabilidade", "Conjuntos"]}}})
+
+//26 aggregate()
+db.disciplinas.aggregate([{$lookup:{from:"usuarios", localField:"idProfessor", foreignField: "_id", as: "Professor"}}])
+
+//27 $exists
+db.disciplinas.find({assunto:{$exists:true, $in:["Lógica"]}})
+db.disciplinas.find({assunto:{$exists:true, $nin:["Lógica"]}})
+db.disciplinas.find({nome:{$exists:true}})
+
+//28 updateMany() $rename renome o campo nome para nomeDisciplina
+db.disciplinas.updateMany({},{$rename:{'nome':'nomeDisciplina'}})
+
+//29 $set e $setOnInset
+db.anuncios.update({"_id" : ObjectId("5ada831e45ba9a4c854d12ea")},{$set:{observacao:"aguardando retorno"},$setOnInsert:{preco:62}},{upsert:true})
+
+//30 findAndModify modifica e retorna um documento
+db.anuncios.findAndModify({query:{idAluno:3, disciplina:"Programação", preco:{$gt:70}}, sort:{disciplina:1}, update:{$inc:{preco:5}}, upsert:true})
+
+//31 findOneAndUpdate() $inc sort projection upsert
+db.anuncios.findOneAndUpdate({disciplina:"Matemática"}, {$inc:{preco:5}}, {sort:{disciplina:1}, projection:{disciplina:1, assunto:1, preco:1}, upsert:true})
+
+//32 explain()
+db.anuncios.explain().count( { preco: { $gt: 50 } } )
+
+
