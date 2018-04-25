@@ -12,26 +12,26 @@ MongoClient.connect(servidor, function(erro, db) {
 var pedidos = [
     {idAluno: 4, compra:[{data: "22/12/2017", 
                 produtos:[ 
-                    {idDisciplina: 1, preco:"45"},
-                    {idDisciplina: 2, preco:"45"}
+                    {idDisciplina: 1, preco:45},
+                    {idDisciplina: 2, preco:69}
                     ]
                 },
                 {data: "11/01/2018",
                 produtos:[
-                    {idDisciplina: 4, preco:"600"}]   
+                    {idDisciplina: 4, preco:600}]   
                     }
                     ]        
     },
     
     {idAluno: 5, compra:[{ data: "10/01/2018", 
     produtos:[ 
-        {idDisciplina: 3, preco:"45"},
-        {idDisciplina: 4, preco:"45"}
+        {idDisciplina: 3, preco:89},
+        {idDisciplina: 4, preco:500}
         ]}]},
         
     {idAluno:6, compra:[{data:"12/02/2018",
         produtos:[
-        {idDisciplina:1, preco:"60"}            
+        {idDisciplina:1, preco:60}            
         ]}]}
 
 ];

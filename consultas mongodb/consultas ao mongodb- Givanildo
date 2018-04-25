@@ -10,56 +10,68 @@ use quero-aulas
 //visualizar as collections
 show collections
 
-//01-Mostrar todos os documentos da coleção, de forma organizada
+//01-retorna todos os documentos da coleção
+db.disciplinas.find()
+
+//02-retorna um documento da coleção
+db.mensagens.findOne()
+
+//03-Mostrar todos os documentos da coleção, de forma organizada
 db.usuarios.find().pretty()
 
-//02-Mostrar a quantidade de documentos em uma coleção
+//04-Mostrar a quantidade de documentos em uma coleção
 db.usuarios.count()
 
-//03-mostra os documentos ocultando o id
+//05-mostra os documentos ocultando o id
 db.login.find({},{_id:0})
 
-//04-mostra todos os documentos da collection em ordem decrescente
+//06-mostra todos os documentos da collection em ordem decrescente
 db.usuarios.find().sort({nome:-1})
 
-//05-mostra todos os documentos da collection em ordem crescente e não exibe o id
+//07-mostra todos os documentos da collection em ordem crescente e não exibe o id
 db.usuarios.find({},{_id:0}).sort({nome:1})
 
-//06-limita a quantidade de documentos de uma collection
+//08-limita a quantidade de documentos de uma collection
 db.disciplinas.find({},{_id:0}).limit(3).pretty()
 
-//07-retorna os valores unicos do atributo nome
+//09-retorna os valores unicos do atributo nome
 db.usuarios.distinct("nome")
 
-//08-retorna o nome da disciplina pesquisada
+//10-retorna o nome da disciplina pesquisada
 db.disciplinas.find({nome:"Português"})
 
-//09-listar documentos dentro de documentos
-db.pedidos.find({"compra.produtos.preco":"60"}).pretty()
+//11-listar documentos dentro de documentos
+db.pedidos.find({"compra.produtos.preco":60}).pretty()
 
-//10-inserindo um documento na collection anuncions
+//12-inserindo um documento na collection anuncions
 db.anuncios.insert({idAluno: 5, disciplina: "Programação", assunto: "PHP", preco: 50, horario:"Tarde", observacao: "Melhor horaŕio de manhã" })
 
-//11-atualizar um documento
+//13-atualizar um documento
 db.anuncios.update({"_id" : ObjectId("5ad7fb7e8d8e5d7c82073bf0")},{idAluno: 3, disciplina: "Matemática", assunto: "Probabilidade", preco: 50, horario:"Tarde", observacao: "Melhor horaŕio às 15 horas"})
 
-//12-mostrar todos os documentos que contenham o assunto Redação ou Probabilidade
+//14-mostrar todos os documentos que contenham o assunto Redação ou Probabilidade
 db.disciplinas.find({$or:[{assunto:"Redação"}, {assunto:"Probabilidade"}]})
 
-//13-retorna os documentos com o preço acima de 60
+//15-retorna os documentos com o preço acima de 60
 db.anuncios.find({preco:{$gt:60}})
 
-//14-Essa operação de atualização definirá o valor do campo de preço nos documentos que contêm valor do campo preco menor que 50 para 62.
+//16-Essa operação de atualização definirá o valor do campo de preço nos documentos que contêm valor do campo preco menor que 50 para 62.
 db.anuncios.update({preco:{$lt:50}}, {$set:{preco: 62}})
 
-//15-Restringe oe campos retornados usando um segundo argumento
-db.disciplinas.find({assunto:{$in:["mongodb","PHP"]}},{ idProfessor:"1"})
+//17- $unset substitui o elemento correspondente por null em vez de remover
+//a operação update() usa o $unset para remover o campo preco quando encontrar uma disciplina de Português 
+db.anuncios.update({"disciplina":"Português"}, {$unset:{preco:""}})
+db.anuncios.update({"disciplina":"Português"}, {$set:{preco:55}})
 
 
-//16-a parit do método aggregate() é retornado os assuntos de cada disciplina e $max o máximo dos valores correspondentes de todos os documentos da coleção
+//18-Restringe os campos retornados usando um segundo argumento
+db.disciplinas.find({assunto:{$in:["mongodb","PHP"]}},{ idProfessor:1})
+
+
+//19-a parit do método aggregate() é retornado os assuntos de cada disciplina e $max o máximo dos valores correspondentes de todos os documentos da coleção
 db.disciplinas.aggregate([{$group:{_id:"$nome", assunto:{$max:"$assunto"}}}])
 
-//17- =============================================================
+//20- =============================================================
 db.usuarios.find({"nome": "Pedro"})
 //essa consulta acima demora mais que o normal par isso é bom criar index, o 1 é a prioridade, assim a consulta fica muito mais rapida depois que criar o index vc faz a consulta acima novamente.
 db.usuarios.createIndex({"nome": 1})
@@ -72,6 +84,43 @@ db.usuarios.getIndexes()
 db.usuarios.dropIndex({"nome": 1})
 //=============================================================
 
-//18-retorna o documento que contenhao que está detro d / /
+//21-retorna o documento que contenhao que está detro d / /
 db.disciplinas.find({assunto:/ção/}).pretty()
+
+//22- insertOne() Insere um documento em uma coleção
+db.usuarios.insertOne({_id: 8, nome: "Adreia", sobrenome:"Mendes", cpf:89596723465, tipo: "Professor"})
+//-----
+db.disciplinas.insertOne({id_professor:8, disciplina:"Português", assunto:["Regência", "Concordância"]})
+//--
+db.disciplinas.insertOne({id_professor:8, disciplina:"Inglês", assunto:["ingês básico", "inglês avançado"]})
+
+//23-Remove documentos da collection
+db.disciplinas.remove( {disciplina:/ngl/})
+
+//24-metodo $push() adiciona um novo documento
+db.getCollection('anuncios').update({assunto:"PHP"},{$push:{observacao:"tem como eu aprender em duas semana a usar o PHP com o MySql"}})
+
+//25--Retorna informações sobre a consulta
+db.getCollection('pedidos').explain().find({"compra.produtos.preco":{$lt:85}})
+
+//26--a agregação retorna os nomes dos usuarios em maiusculo
+db.usuarios.aggregate([{$project:{nome:{$toUpper:"$nome"}}}])
+
+//27--agregação realizada utilizando o operador lookup()
+db.pedidos.aggregate([{$lookup:{from:"usuarios", localField:"idAluno", foreignField: "_id", as: "pedidos_realizados_por"}}]).pretty()
+
+//28-metodo replaceOne() usa um critério de seleção, o documento o qual vai ser substituido, e o terceiro parâmetro substitui o documento que corresponde a consulta
+db.usuarios.insertOne({_id: 9, nome: "Fulano", sobrenome:"Silva", cpf:09596723985, tipo: "Professor"})
+
+db.usuarios.replaceOne({"_id" :9,"sobrenome":"Silva"},{"sobrenome":"da Silva Santos"})
+
+//29-essa operação usa o $addToSet() e o $each para modificar e adicionar vários elementos à matriz assunto
+db.disciplinas.update({ "_id" : ObjectId("5ad7f5ecb322677a0056662c")}, {$addToSet:{assunto:{$each:["Redação", "interpretação de texto", "Regência"]}}})
+
+//30--usa o $position para informar em qual posição será inserindo o novo elemento
+db.disciplinas.update({idProfessor:3,nome:"Programação"},{$push:{assunto:{$each:["MySql"], $position:0}}})
+
+
+
+
 
